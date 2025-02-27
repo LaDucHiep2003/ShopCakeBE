@@ -46,7 +46,12 @@ class AuthModel{
         try {
             $email = $data['email'];
             $pass = md5($data['password']);
-            $query = $this->conn->prepare("select * from $this->table where email=:email and password=:password LIMIT 1");
+//            $query = $this->conn->prepare("Select * from accounts where email=:email and password=:password");
+            $query = $this->conn->prepare("SELECT accounts.*, role.title AS role 
+                FROM accounts LEFT JOIN role ON accounts.roleId = role.id
+                WHERE accounts.email=:email
+                AND accounts.password=:password
+                LIMIT 1");
             $query->execute(['email' => $email, 'password' => $pass]);
             $user = $query->fetch(PDO::FETCH_ASSOC);
             if ($query->rowCount() > 0) {
@@ -59,8 +64,8 @@ class AuthModel{
                         'id' => $user['id'],
                         'email' => $user['email'],
                         'fullName' => $user['fullName'],
-                        'roleId' => $user['roleId'],
-                        'password' => $user['password'],
+                        'role' => ($user['roleId'] == "") ? "client" : "admin",
+                        'roleTitle' => $user['role'],
                         'phone' => $user['phone'],
                         'avatar' => 'avatar'
                     ]
