@@ -5,6 +5,9 @@ include_once __DIR__ . '/../Controllers/AuthController.php';
 include_once __DIR__ . '/../Controllers/ProductCategoryController.php';
 include_once  __DIR__ . '/../Controllers/RoleController.php';
 include_once  __DIR__ . '/../Controllers/AccountsController.php';
+include_once  __DIR__ . '/../Controllers/CartController.php';
+
+
 
 include_once __DIR__ . '/../Routes/handleRouter.php';
 
@@ -14,6 +17,7 @@ $AuthController = new AuthController();
 $ProductCategoryController = new ProductCategoryController();
 $RoleController = new RoleController();
 $AccountController = new AccountController();
+$CartController = new CartController();
 
 $methodRequest = $_SERVER['REQUEST_METHOD'];
 $UriRequest = $_SERVER['REQUEST_URI'];
@@ -76,6 +80,15 @@ $routers = [
         '/create/account' => function () use ($AccountController) {
             $AccountController->create();
         },
+        '/cart/add' => function () use ($CartController) {
+            $CartController->addCart();
+        },
+        '/cart/getCart' => function () use ($CartController) {
+            $CartController->getCart();
+        },
+        '/cart/addProduct' => function () use ($CartController) {
+            $CartController->addProduct();
+        },
     ],
     'PATCH' =>[
         '/delete/product/(\d+)' => function ($id) use ($ProductController) {
@@ -101,6 +114,9 @@ $routers = [
         },
         '/role/permissions' => function () use ($RoleController) {
             $RoleController->updatePermissions();
+        },
+        '/cart/changeQuantity' => function () use ($CartController) {
+            $CartController->changeQuantity();
         },
     ],
     // khi xảy ra CORS trình duyệt sẽ gửi OPTIONS (preflight request) trước khi yêu cầu thực tế đến máy chủ. Mục đích kiếm tra xem máy chủ có hỗ trợ method mà web gửi lên không
