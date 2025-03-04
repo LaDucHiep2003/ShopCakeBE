@@ -98,4 +98,14 @@ class CartModel extends BaseModel
         }
         return false;
     }
+
+    public function deleteProduct($data) : bool
+    {
+        $product_id = $data["product_id"];
+        $query = $this->conn->prepare("DELETE FROM cart_items WHERE product_id=:product_id");
+        if($query->execute(["product_id" => $product_id])){
+            return true;
+        }
+        return false;
+    }
 }

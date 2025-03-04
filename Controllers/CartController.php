@@ -49,5 +49,14 @@ class CartController
             echo json_encode(["message" => "Lỗi"]);
         }
     }
-
+    public function deleteProduct()
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $result = $this->CartModel->deleteProduct($data);
+        if ($result) {
+            echo json_encode(["message" => "success","Xóa thành công sản phẩm"]);
+        } else {
+            echo json_encode(["message" => "Lỗi"]);
+        }
+    }
 }

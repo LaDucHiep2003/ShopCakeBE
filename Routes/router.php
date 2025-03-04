@@ -6,6 +6,7 @@ include_once __DIR__ . '/../Controllers/ProductCategoryController.php';
 include_once  __DIR__ . '/../Controllers/RoleController.php';
 include_once  __DIR__ . '/../Controllers/AccountsController.php';
 include_once  __DIR__ . '/../Controllers/CartController.php';
+include_once  __DIR__ . '/../Controllers/OrderController.php';
 
 
 
@@ -18,6 +19,7 @@ $ProductCategoryController = new ProductCategoryController();
 $RoleController = new RoleController();
 $AccountController = new AccountController();
 $CartController = new CartController();
+$OrderController = new OrderController();
 
 $methodRequest = $_SERVER['REQUEST_METHOD'];
 $UriRequest = $_SERVER['REQUEST_URI'];
@@ -57,6 +59,9 @@ $routers = [
         '/accounts/(\d+)' => function ($id) use ($AccountController) {
             $AccountController->detail($id);
         },
+        '/order/(\d+)' => function ($id) use ($OrderController) {
+            $OrderController->getCheckout($id);
+        },
     ],
     'POST' =>[
         '/register' => function () use ($AuthController) {
@@ -88,6 +93,12 @@ $routers = [
         },
         '/cart/addProduct' => function () use ($CartController) {
             $CartController->addProduct();
+        },
+        '/cart/deleteProduct' => function () use ($CartController) {
+            $CartController->deleteProduct();
+        },
+        '/order/checkout' => function () use ($OrderController) {
+            $OrderController->checkout();
         },
     ],
     'PATCH' =>[
