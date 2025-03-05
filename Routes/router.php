@@ -62,6 +62,12 @@ $routers = [
         '/order/(\d+)' => function ($id) use ($OrderController) {
             $OrderController->getCheckout($id);
         },
+        '/order' => function () use ($OrderController) {
+            $OrderController->getOrderList();
+        },
+        '/order/confirmed' => function () use ($OrderController) {
+            $OrderController->confirmedOrder();
+        },
     ],
     'POST' =>[
         '/register' => function () use ($AuthController) {
@@ -128,6 +134,12 @@ $routers = [
         },
         '/cart/changeQuantity' => function () use ($CartController) {
             $CartController->changeQuantity();
+        },
+        '/order/delete/(\d+)' => function ($id) use ($OrderController) {
+            $OrderController->delete($id);
+        },
+        '/order/confirm' => function () use ($OrderController) {
+            $OrderController->ConfirmOrder();
         },
     ],
     // khi xảy ra CORS trình duyệt sẽ gửi OPTIONS (preflight request) trước khi yêu cầu thực tế đến máy chủ. Mục đích kiếm tra xem máy chủ có hỗ trợ method mà web gửi lên không

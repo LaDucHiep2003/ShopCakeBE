@@ -110,4 +110,41 @@ class OrderModel extends BaseModel
         }
     }
 
+    public function getOrderList(): array
+    {
+        try {
+            $query = $this->conn->prepare("Select * from orders where confirm = false and deleted = false");
+            $query->execute();
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        }catch (Throwable $e) {
+            $this->conn->rollBack();
+            return false;
+        }
+    }
+    public function delete ($id) : bool
+    {
+        return $this->OrderModel->delete($id);
+    }
+    public function ConfirmOrder($id) : bool
+    {
+        try {
+            $query = $this->conn->prepare("Update orders $this->table SET deleted = true WHERE id = :id");
+            $query->execute(["id" => $id]);
+            return true;
+        }catch (Throwable $e) {
+            $this->conn->rollBack();
+            return false;
+        }
+    }
+    function confirmedOrder()
+    {
+        try {
+            $query = $this->conn->prepare("Select * from $this->table where confirm = true and deleted = false");
+            $query->execute();
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        }catch (Throwable $e) {
+            $this->conn->rollBack();
+            return false;
+        }
+    }
 }
