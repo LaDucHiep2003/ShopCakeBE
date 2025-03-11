@@ -106,6 +106,9 @@ $routers = [
         '/order/checkout' => function () use ($OrderController) {
             $OrderController->checkout();
         },
+        '/order/payment' => function () use ($OrderController) {
+            $OrderController->createVnpayUrl();
+        },
     ],
     'PATCH' =>[
         '/delete/product/(\d+)' => function ($id) use ($ProductController) {

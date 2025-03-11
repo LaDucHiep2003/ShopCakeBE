@@ -59,4 +59,13 @@ class OrderController
         $result = $this->OrderModel->confirmedOrder();
         echo json_encode(['orders' => $result]);
     }
+    public function createVnpayUrl()
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $orderId = $data['orderId'];
+        $amount = $data['amount'];
+        $orderInfo = "Thanh toán đơn hàng #$orderId";
+        $result = $this->OrderModel->createVnpayUrl($orderId, $amount, $orderInfo);
+        echo json_encode(["payUrl" => $result]);
+    }
 }
