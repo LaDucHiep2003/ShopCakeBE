@@ -14,12 +14,21 @@ class OrderController
 
     public function checkout()
     {
+        // Đọc dữ liệu từ request
         $data = json_decode(file_get_contents("php://input"), true);
-        $result = $this->OrderModel->checkout($data);
-        if ($result) {
-            echo json_encode(["message" => "success", "Thêm thành công sản phẩm vào giỏ hàng"]);
+        $orderId = $this->OrderModel->checkout($data);
+        if ($orderId) {
+            echo json_encode([
+                "message" => "success",
+                "order_id" => $orderId,
+                "detail" => "Đơn hàng đã được tạo thành công."
+            ]);
         } else {
-            echo json_encode(["message" => "Lỗi"]);
+            // Trả về thông báo lỗi
+            echo json_encode([
+                "message" => "error",
+                "detail" => "Có lỗi xảy ra khi tạo đơn hàng."
+            ]);
         }
     }
 

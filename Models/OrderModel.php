@@ -14,7 +14,7 @@ class OrderModel extends BaseModel
         $this->OrderModel = new BaseModel($this->table);
     }
 
-    public function checkout($data) : bool
+    public function checkout($data) : int
     {
         $cart_id = $data['cart_id'];
         $first_name = $data['delivery']['first_name'];
@@ -66,7 +66,7 @@ class OrderModel extends BaseModel
                 $queryClearCart->execute(["id" => $cart_id]);
                 // Commit transaction nếu tất cả các bước đều thành công
                 $this->conn->commit();
-                return true;
+                return $orderId;
             } else {
                 // Nếu chèn đơn hàng thất bại, rollback dữ liệu
                 $this->conn->rollBack();
@@ -128,7 +128,7 @@ class OrderModel extends BaseModel
     public function ConfirmOrder($id) : bool
     {
         try {
-            $query = $this->conn->prepare("Update orders $this->table SET deleted = true WHERE id = :id");
+            $query = $this->conn->prepare("Update orders $this->table SET confirm = true WHERE id = :id");
             $query->execute(["id" => $id]);
             return true;
         }catch (Throwable $e) {
@@ -149,8 +149,8 @@ class OrderModel extends BaseModel
     }
     function createVnpayUrl($orderId, $amount, $orderInfo): string
     {
-        $vnp_TmnCode = "LLF4HRF1"; // Mã website của bạn
-        $vnp_HashSecret = "IGZCHLU9MIEHJGAP2BYTPPVLMD0UMB2M"; // Chuỗi bí mật
+        $vnp_TmnCode = "NPSEKRDY"; // Mã website của bạn
+        $vnp_HashSecret = "P94EUOWAYSQVXTL2PS7J83FFG8B7JQEG"; // Chuỗi bí mật
 
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; // URL sandbox, đổi thành URL thật khi live
         $vnp_Returnurl = "http://localhost:5173/success/1"; // URL nhận kết quả
