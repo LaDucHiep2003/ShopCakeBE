@@ -35,6 +35,9 @@ $routers = [
         '/products/(\d+)' => function ($id) use ($ProductController) {
             $ProductController->detail($id);
         },
+        '/products/random' => function () use ($ProductController) {
+            $ProductController->randomProducts();
+        },
         '/getUser' =>function () use ($AuthController) {
             $AuthController->getUserFromToken();
         },

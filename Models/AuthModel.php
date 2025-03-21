@@ -47,7 +47,7 @@ class AuthModel{
             $email = $data['email'];
             $pass = md5($data['password']);
 //            $query = $this->conn->prepare("Select * from accounts where email=:email and password=:password");
-            $query = $this->conn->prepare("SELECT accounts.*, role.title AS role 
+            $query = $this->conn->prepare("SELECT accounts.*, role.title AS role, role.permissions
                 FROM accounts LEFT JOIN role ON accounts.roleId = role.id
                 WHERE accounts.email=:email
                 AND accounts.password=:password
@@ -67,7 +67,8 @@ class AuthModel{
                         'role' => ($user['roleId'] == "") ? "client" : "admin",
                         'roleTitle' => $user['role'],
                         'phone' => $user['phone'],
-                        'avatar' => 'avatar'
+                        'avatar' => 'avatar',
+                        'permissions' => $user['permissions']
                     ]
                 ];
                 $jwt = JWT::encode($payload, $key, 'HS256');

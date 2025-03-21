@@ -17,10 +17,10 @@ class BaseModel
         // phân trang
         $page = (isset($_GET['page']) && $_GET['page'] !== '' && $_GET['page'] !== 'undefined') ? $_GET['page'] : 1;
         // nếu có trường category thì lấy còn không thì mặc định lấy category đầu tiên
-        $limit = 10;
+        $limit = 15;
         $offset = ($page - 1) * $limit;
         // lấy tổng số bản ghi trong table
-        $count_query = $this->conn->prepare("SELECT COUNT(*) as total from $this->table");
+        $count_query = $this->conn->prepare("SELECT COUNT(*) as total from $this->table where deleted = false");
         $count_query->execute();
         $record_total = $count_query->fetch(PDO::FETCH_ASSOC)['total'];
         // tổng số trang

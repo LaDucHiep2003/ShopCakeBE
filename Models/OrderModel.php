@@ -84,7 +84,7 @@ class OrderModel extends BaseModel
         try {
             // Lấy thông tin cá nhân từ bảng orders
             $orderQuery = $this->conn->prepare("
-            SELECT first_name, last_name, phone, address 
+            SELECT id,first_name, last_name, phone, address 
             FROM orders 
             WHERE id = :id");
             $orderQuery->execute(["id" => $id]);
@@ -153,7 +153,7 @@ class OrderModel extends BaseModel
         $vnp_HashSecret = "P94EUOWAYSQVXTL2PS7J83FFG8B7JQEG"; // Chuỗi bí mật
 
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; // URL sandbox, đổi thành URL thật khi live
-        $vnp_Returnurl = "http://localhost:5173/success/1"; // URL nhận kết quả
+        $vnp_Returnurl = "http://localhost:5173/checkout"; // URL nhận kết quả
 
         $vnp_TxnRef = $orderId;
         $vnp_OrderInfo = $orderInfo;

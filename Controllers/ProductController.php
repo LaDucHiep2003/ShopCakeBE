@@ -47,4 +47,9 @@ class ProductController
             echo json_encode(['message' => "Xóa sản phẩm thành công!"]);
         }
     }
+    public function randomProducts()
+    {
+        $result = $this->ProductModel->randomProducts();
+        echo json_encode(['data' => $result]);
+    }
 }
