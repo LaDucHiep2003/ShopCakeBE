@@ -38,8 +38,14 @@ $routers = [
         '/products/random' => function () use ($ProductController) {
             $ProductController->randomProducts();
         },
+        '/products/popular' => function () use ($ProductController) {
+            $ProductController->getPopularProducts();
+        },
         '/getUser' =>function () use ($AuthController) {
             $AuthController->getUserFromToken();
+        },
+        '/getRolebyUser/(\d+)' =>function ($id) use ($RoleController) {
+            $RoleController->getRolebyUser($id);
         },
         '/getProductCategory' =>function () use ($ProductCategoryController) {
             $ProductCategoryController->index();
@@ -70,6 +76,9 @@ $routers = [
         },
         '/order/confirmed' => function () use ($OrderController) {
             $OrderController->confirmedOrder();
+        },
+        '/order/history/(\d+)' => function ($id) use ($OrderController) {
+            $OrderController->getHistoryOrder($id);
         },
     ],
     'POST' =>[

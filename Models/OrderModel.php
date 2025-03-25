@@ -199,4 +199,15 @@ class OrderModel extends BaseModel
 
         return $vnp_Url;
     }
+
+    public function getHistoryOrder($id)
+    {
+        $query = $this->conn->prepare("Select orders.created_at, order_items.*, products.title, products.image, products.id as productId from carts
+            inner join orders on carts.id = orders.cart_id
+            inner join order_items on orders.id = order_items.order_id
+            inner join products on order_items.product_id = products.id
+            where carts.id = :id order by orders.created_at desc");
+        $query->execute(['id' => $id]);
+        return $query->fetchAll();
+    }
 }

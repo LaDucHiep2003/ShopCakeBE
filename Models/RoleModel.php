@@ -58,4 +58,11 @@ class RoleModel extends BaseModel
             return false;
         }
     }
+
+    public function getRolebyUser($id)
+    {
+        $query = $this->conn->prepare("SELECT * FROM role inner join accounts on role.id = accounts.id WHERE accounts.id = :id");
+        $query->execute(['id' => $id]);
+        return $query->fetch();
+    }
 }

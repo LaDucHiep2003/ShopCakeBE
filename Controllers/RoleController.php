@@ -70,4 +70,10 @@ class RoleController
         }
     }
 
+    public function getRolebyUser($id)
+    {
+        $result = $this->RoleModel->getRolebyUser($id);
+        echo json_encode(['detail' => $result]);
+    }
+
 }

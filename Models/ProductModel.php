@@ -43,4 +43,11 @@ class ProductModel extends BaseModel
         $data = $query->fetchAll(PDO::FETCH_ASSOC);
         return $data;
     }
+    public function getPopularProducts()
+    {
+        $query = $this->conn->prepare("SELECT * FROM products where deleted = false and popular = true");
+        $query->execute();
+        $data = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $data;
+    }
 }

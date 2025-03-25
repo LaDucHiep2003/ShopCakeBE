@@ -77,4 +77,9 @@ class OrderController
         $result = $this->OrderModel->createVnpayUrl($orderId, $amount, $orderInfo);
         echo json_encode(["payUrl" => $result]);
     }
+    public function getHistoryOrder($id)
+    {
+        $result = $this->OrderModel->getHistoryOrder($id);
+        echo json_encode(['orders' => $result]);
+    }
 }

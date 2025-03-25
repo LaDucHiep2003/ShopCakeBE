@@ -52,4 +52,9 @@ class ProductController
         $result = $this->ProductModel->randomProducts();
         echo json_encode(['data' => $result]);
     }
+    public function getPopularProducts()
+    {
+        $result = $this->ProductModel->getPopularProducts();
+        echo json_encode(['data' => $result]);
+    }
 }
