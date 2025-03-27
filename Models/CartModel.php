@@ -9,7 +9,7 @@ class CartModel extends BaseModel
 
     public function __construct()
     {
-        $this->table = 'cart';
+        $this->table = 'carts';
         $this->conn = ConnectionDB::GetConnect();
         $this->CartModel = new BaseModel($this->table);
     }
@@ -107,5 +107,38 @@ class CartModel extends BaseModel
             return true;
         }
         return false;
+    }
+
+    public function updateCard($data): int
+    {
+        $user_id = $data["user_id"];
+        $id = $data["id"];
+
+        // Kiểm tra user_id hiện tại của cart
+        $query = $this->conn->prepare("SELECT user_id FROM $this->table WHERE id = :id");
+        $query->execute(["id" => $id]);
+        $cart = $query->fetch(PDO::FETCH_ASSOC);
+
+        if (!$cart) {
+            return false; // Không tìm thấy cart
+        }
+        $cartQuery = $this->conn->prepare("SELECT id FROM $this->table WHERE user_id = :user_id LIMIT 1");
+        $cartQuery->execute(["user_id" => $user_id]);
+        $existingCart = $cartQuery->fetch(PDO::FETCH_ASSOC);
+
+        if ($existingCart) {
+            // Nếu user đã có cart, trả về cartId đã có để tránh xung đột
+            return $existingCart["id"];
+        }
+
+        if ($cart["user_id"] === null) {
+            // Nếu user_id là NULL, cập nhật user_id mới
+            $updateQuery = $this->conn->prepare("UPDATE $this->table SET user_id = :user_id WHERE id = :id");
+            if ($updateQuery->execute(["user_id" => $user_id, "id" => $id])) {
+                return $id;
+            }
+            return false;
+        }
+        return $id;
     }
 }

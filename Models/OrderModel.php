@@ -113,7 +113,7 @@ class OrderModel extends BaseModel
     public function getOrderList(): array
     {
         try {
-            $query = $this->conn->prepare("Select * from orders where confirm = false and deleted = false");
+            $query = $this->conn->prepare("Select * from orders where status = 'pending' and deleted = false");
             $query->execute();
             return $query->fetchAll(PDO::FETCH_ASSOC);
         }catch (Throwable $e) {
@@ -128,7 +128,7 @@ class OrderModel extends BaseModel
     public function ConfirmOrder($id) : bool
     {
         try {
-            $query = $this->conn->prepare("Update orders $this->table SET confirm = true WHERE id = :id");
+            $query = $this->conn->prepare("Update orders $this->table SET status = 'completed' WHERE id = :id");
             $query->execute(["id" => $id]);
             return true;
         }catch (Throwable $e) {
@@ -139,7 +139,7 @@ class OrderModel extends BaseModel
     function confirmedOrder()
     {
         try {
-            $query = $this->conn->prepare("Select * from $this->table where confirm = true and deleted = false");
+            $query = $this->conn->prepare("Select * from $this->table where status = 'completed' and deleted = false");
             $query->execute();
             return $query->fetchAll(PDO::FETCH_ASSOC);
         }catch (Throwable $e) {
@@ -199,6 +199,54 @@ class OrderModel extends BaseModel
 
         return $vnp_Url;
     }
+    public function momoPayment($amount)
+    {
+        $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+
+        $partnerCode = 'MOMOBKUN20180529';
+        $accessKey = 'klm05TvNBzhg7h7j';
+        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+
+        $orderInfo = "Thanh toán qua ATM MoMo";
+        $orderId = time() . "";
+        $redirectUrl = "http://localhost:8080/checkout";
+        $ipnUrl = "http://localhost:8080/checkout";
+        $extraData = "";
+
+        $requestId = time() . "";
+        $requestType = "payWithATM";
+
+        // Tạo chữ ký bảo mật (signature)
+        $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData .
+            "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo .
+            "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl .
+            "&requestId=" . $requestId . "&requestType=" . $requestType;
+        $signature = hash_hmac("sha256", $rawHash, $secretKey);
+
+        // Chuẩn bị dữ liệu gửi đến MoMo
+        $data = [
+            'partnerCode' => $partnerCode,
+            'partnerName' => "Test",
+            'storeId' => "MomoTestStore",
+            'requestId' => $requestId,
+            'amount' => $amount,
+            'orderId' => $orderId,
+            'orderInfo' => $orderInfo,
+            'redirectUrl' => $redirectUrl,
+            'ipnUrl' => $ipnUrl,
+            'lang' => 'vi',
+            'extraData' => $extraData,
+            'requestType' => $requestType,
+            'signature' => $signature
+        ];
+
+        // Gửi request đến MoMo
+        $result = $this->execPostRequest($endpoint, json_encode($data));
+        $jsonResult = json_decode($result, true); // Decode JSON response
+
+        return $jsonResult['payUrl'];
+    }
+
 
     public function getHistoryOrder($id)
     {
@@ -208,6 +256,30 @@ class OrderModel extends BaseModel
             inner join products on order_items.product_id = products.id
             where carts.id = :id order by orders.created_at desc");
         $query->execute(['id' => $id]);
+        return $query->fetchAll();
+    }
+    public function CountOrderMonth()
+    {
+        $query = $this->conn->prepare("SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') AS month, 
+            COUNT(*) AS total_orders
+            FROM orders
+            WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) -- Lấy dữ liệu 1 năm gần nhất
+            GROUP BY month
+            ORDER BY month");
+        $query->execute();
+        return $query->fetchAll();
+    }
+    public function CountTotalPriceMonth()
+    {
+        $query = $this->conn->prepare("SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') AS month,
+            SUM(totalPrice) AS revenue
+        FROM orders
+        WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) and status = 'completed'
+        GROUP BY month
+        ORDER BY month");
+        $query->execute();
         return $query->fetchAll();
     }
 }

@@ -56,6 +56,9 @@ $routers = [
         '/category/(\d+)' => function ($id) use ($ProductCategoryController) {
             $ProductCategoryController->detail($id);
         },
+        '/category/product/(\d+)' => function ($id) use ($ProductCategoryController) {
+            $ProductCategoryController->getProductInCategory($id);
+        },
         '/roles' => function () use ($RoleController) {
             $RoleController->index();
         },
@@ -79,6 +82,12 @@ $routers = [
         },
         '/order/history/(\d+)' => function ($id) use ($OrderController) {
             $OrderController->getHistoryOrder($id);
+        },
+        '/order/countOrderMonth' => function () use ($OrderController) {
+            $OrderController->CountOrderMonth();
+        },
+        '/order/countTotalPriceMonth' => function () use ($OrderController) {
+            $OrderController->CountTotalPriceMonth();
         },
     ],
     'POST' =>[
@@ -121,6 +130,9 @@ $routers = [
         '/order/payment' => function () use ($OrderController) {
             $OrderController->createVnpayUrl();
         },
+        '/order/momoPayment' => function () use ($OrderController) {
+            $OrderController->momoPayment();
+        },
     ],
     'PATCH' =>[
         '/delete/product/(\d+)' => function ($id) use ($ProductController) {
@@ -147,7 +159,7 @@ $routers = [
         '/role/permissions' => function () use ($RoleController) {
             $RoleController->updatePermissions();
         },
-        '/cart/changeQuantity' => function () use ($CartController) {
+        '/card/changeQuantity' => function () use ($CartController) {
             $CartController->changeQuantity();
         },
         '/order/delete/(\d+)' => function ($id) use ($OrderController) {
@@ -155,6 +167,9 @@ $routers = [
         },
         '/order/confirm' => function () use ($OrderController) {
             $OrderController->ConfirmOrder();
+        },
+        '/card/update' => function () use ($CartController) {
+            $CartController->UpdateCard();
         },
     ],
     // khi xảy ra CORS trình duyệt sẽ gửi OPTIONS (preflight request) trước khi yêu cầu thực tế đến máy chủ. Mục đích kiếm tra xem máy chủ có hỗ trợ method mà web gửi lên không

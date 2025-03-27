@@ -36,4 +36,13 @@ class ProductCategoryModel extends BaseModel
     {
         return $this->ProductCategoryModel->delete($id);
     }
+    public function getProductInCategory($id)
+    {
+        $query = $this->conn->prepare("Select products.* from category
+            inner join products on category.id = products.parentId
+            where category.id=:id");
+        $query->execute(["id" => $id]);
+        $data = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $data;
+    }
 }

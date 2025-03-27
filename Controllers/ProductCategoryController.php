@@ -47,4 +47,9 @@ class ProductCategoryController
             echo json_encode(['message' => "Xóa sản phẩm thành công!"]);
         }
     }
+    public function getProductInCategory($id)
+    {
+        $result = $this->ProductCategoryModel->getProductInCategory($id);
+        echo json_encode(['data' => $result]);
+    }
 }

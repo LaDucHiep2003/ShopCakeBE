@@ -82,4 +82,20 @@ class OrderController
         $result = $this->OrderModel->getHistoryOrder($id);
         echo json_encode(['orders' => $result]);
     }
+    public function CountOrderMonth()
+    {
+        $result = $this->OrderModel->CountOrderMonth();
+        echo json_encode(['orders' => $result]);
+    }
+    public function CountTotalPriceMonth(){
+        $result = $this->OrderModel->CountTotalPriceMonth();
+        echo json_encode(['orders' => $result]);
+    }
+    public function momoPayment()
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $amount = $data["amount"];
+        $result = $this->OrderModel->momoPayment($amount);
+        echo json_encode(["payUrl" => $result]);
+    }
 }

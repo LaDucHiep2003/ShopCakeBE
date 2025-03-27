@@ -59,4 +59,10 @@ class CartController
             echo json_encode(["message" => "Lỗi"]);
         }
     }
+    public function UpdateCard()
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $result = $this->CartModel->updateCard($data);
+        echo json_encode($result);
+    }
 }
