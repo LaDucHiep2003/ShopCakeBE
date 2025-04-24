@@ -62,8 +62,17 @@ class OrderModel extends BaseModel
                     ]);
                 }
                 // Xóa giỏ hàng sau khi đặt hàng thành công
-                $queryClearCart = $this->conn->prepare("DELETE FROM cart_items WHERE cart_id = :id");
-                $queryClearCart->execute(["id" => $cart_id]);
+                $queryClearCart = $this->conn->prepare("
+                    DELETE FROM cart_items 
+                    WHERE cart_id = :cart_id AND product_id = :product_id
+                ");
+
+                foreach ($products as $product) {
+                    $queryClearCart->execute([
+                        "cart_id" => $cart_id,
+                        "product_id" => $product["id"]
+                    ]);
+                }
                 // Commit transaction nếu tất cả các bước đều thành công
                 $this->conn->commit();
                 return $orderId;
@@ -199,8 +208,9 @@ class OrderModel extends BaseModel
 
         return $vnp_Url;
     }
-    public function momoPayment($amount)
+    public function momoPayment($data)
     {
+        $amount = $data["amount"];
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
 
         $partnerCode = 'MOMOBKUN20180529';
@@ -244,7 +254,27 @@ class OrderModel extends BaseModel
         $result = $this->execPostRequest($endpoint, json_encode($data));
         $jsonResult = json_decode($result, true); // Decode JSON response
 
+        error_log("MoMo Response: " . json_encode($jsonResult));
+
         return $jsonResult['payUrl'];
+    }
+    private function execPostRequest($url, $data)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data))
+        );
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        //execute post
+        $result = curl_exec($ch);
+        //close connection
+        curl_close($ch);
+        return $result;
     }
 
 

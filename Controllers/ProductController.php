@@ -47,9 +47,9 @@ class ProductController
             echo json_encode(['message' => "Xóa sản phẩm thành công!"]);
         }
     }
-    public function randomProducts()
+    public function randomProducts($parentId)
     {
-        $result = $this->ProductModel->randomProducts();
+        $result = $this->ProductModel->randomProducts($parentId);
         echo json_encode(['data' => $result]);
     }
     public function getPopularProducts()

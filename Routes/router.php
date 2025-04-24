@@ -35,8 +35,8 @@ $routers = [
         '/products/(\d+)' => function ($id) use ($ProductController) {
             $ProductController->detail($id);
         },
-        '/products/random' => function () use ($ProductController) {
-            $ProductController->randomProducts();
+        '/products/random/(\d+)' => function ($parentId) use ($ProductController) {
+            $ProductController->randomProducts($parentId);
         },
         '/products/popular' => function () use ($ProductController) {
             $ProductController->getPopularProducts();

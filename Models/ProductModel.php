@@ -36,10 +36,12 @@ class ProductModel extends BaseModel
     {
         return $this->ProductModel->delete($id);
     }
-    public function randomProducts()
+    public function randomProducts($parentId)
     {
-        $query = $this->conn->prepare("SELECT * FROM products where deleted = false ORDER BY RAND() LIMIT 4");
-        $query->execute();
+        $query = $this->conn->prepare("Select * from products
+            inner join category on products.parentId = category.id
+            where products.parentId = :parentId and products.deleted = false ORDER BY RAND() LIMIT 4");
+        $query->execute(['parentId' => $parentId]);
         $data = $query->fetchAll(PDO::FETCH_ASSOC);
         return $data;
     }
