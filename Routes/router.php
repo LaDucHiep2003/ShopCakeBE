@@ -30,7 +30,7 @@ $UriRequest = strtok($UriRequest, '?');
 $routers = [
     'GET' =>[
         '/products' => function () use ($ProductController) {
-            $ProductController->index();
+            $ProductController->getProductsOfCategory();
         },
         '/products/(\d+)' => function ($id) use ($ProductController) {
             $ProductController->detail($id);

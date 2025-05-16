@@ -57,4 +57,10 @@ class ProductController
         $result = $this->ProductModel->getPopularProducts();
         echo json_encode(['data' => $result]);
     }
+
+    public function getProductsOfCategory()
+    {
+        $result = $this->ProductModel->getProductsOfCategory();
+        echo json_encode(['data' => $result]);
+    }
 }

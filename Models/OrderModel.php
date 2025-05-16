@@ -217,27 +217,23 @@ class OrderModel extends BaseModel
         $accessKey = 'klm05TvNBzhg7h7j';
         $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
 
-        $orderInfo = "Thanh toán qua ATM MoMo";
+        $orderInfo = "Thanh toán qua mã QR MoMo";
         $orderId = time() . "";
+        $requestId = time() . "";
         $redirectUrl = "http://localhost:8080/checkout";
         $ipnUrl = "http://localhost:8080/checkout";
         $extraData = "";
+        $requestType = "captureWallet";
 
-        $requestId = time() . "";
-        $requestType = "payWithATM";
-
-        // Tạo chữ ký bảo mật (signature)
-        $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData .
-            "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo .
-            "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl .
-            "&requestId=" . $requestId . "&requestType=" . $requestType;
+        // Tạo chữ ký (signature)
+        $rawHash = "accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType";
         $signature = hash_hmac("sha256", $rawHash, $secretKey);
 
-        // Chuẩn bị dữ liệu gửi đến MoMo
+        // Dữ liệu gửi sang MoMo
         $data = [
             'partnerCode' => $partnerCode,
             'partnerName' => "Test",
-            'storeId' => "MomoTestStore",
+            "storeId" => "MomoTestStore",
             'requestId' => $requestId,
             'amount' => $amount,
             'orderId' => $orderId,
@@ -250,13 +246,16 @@ class OrderModel extends BaseModel
             'signature' => $signature
         ];
 
-        // Gửi request đến MoMo
+        // Gửi dữ liệu sang MoMo
         $result = $this->execPostRequest($endpoint, json_encode($data));
-        $jsonResult = json_decode($result, true); // Decode JSON response
+        $jsonResult = json_decode($result, true);
 
-        error_log("MoMo Response: " . json_encode($jsonResult));
-
-        return $jsonResult['payUrl'];
+        if (isset($jsonResult['payUrl'])) {
+            echo json_encode(['payUrl' => $jsonResult['payUrl']]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Không tạo được liên kết MoMo', 'response' => $jsonResult]);
+        }
     }
     private function execPostRequest($url, $data)
     {

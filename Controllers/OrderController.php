@@ -94,7 +94,6 @@ class OrderController
     public function momoPayment()
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        $result = $this->OrderModel->momoPayment($data);
-        echo json_encode(["payUrl" => $result]);
+        $this->OrderModel->momoPayment($data);
     }
 }
