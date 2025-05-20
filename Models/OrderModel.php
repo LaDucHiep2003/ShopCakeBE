@@ -28,9 +28,15 @@ class OrderModel extends BaseModel
 
         $products = $data['products'];
 
+        $discountId = $data['discount_id'];
+        $userId = $data['user_id'];
+
         try {
-            // Bắt đầu transaction để đảm bảo tính toàn vẹn dữ liệu
             $this->conn->beginTransaction();
+
+            if(isset($discountId)){
+                $this->recordDiscountUsage($userId, $discountId);
+            }
 
             // Chèn dữ liệu vào bảng `orders`
             $queryOrder = $this->conn->prepare("INSERT INTO orders (cart_id, first_name, last_name, company, city, phone, address,totalPrice,totalQuantity) 
@@ -47,9 +53,7 @@ class OrderModel extends BaseModel
                 "totalPrice" => $totalPrice,
                 "totalQuantity" => $totalQuantity
             ])) {
-                // Lấy ID đơn hàng vừa tạo
                 $orderId = $this->conn->lastInsertId();
-                // Thêm từng sản phẩm vào `order_items`
                 $queryItem = $this->conn->prepare("INSERT INTO order_items (order_id, product_id, quantity, price) 
                 VALUES (:order_id, :product_id, :quantity, :price)");
 
@@ -310,5 +314,19 @@ class OrderModel extends BaseModel
         ORDER BY month");
         $query->execute();
         return $query->fetchAll();
+    }
+    public function recordDiscountUsage($userId, $discountId)
+    {
+        try {
+            $stmt = $this->conn->prepare("
+            INSERT INTO used_discounts (user_id, discount_id, used_at)
+            VALUES (?, ?, NOW())
+        ");
+            $stmt->execute([$userId, $discountId]);
+
+            return true;
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 }

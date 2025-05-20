@@ -33,6 +33,7 @@ class AccountController
     public function edit($id)
     {
         $data = json_decode(file_get_contents("php://input"), true);
+        $data['password'] = md5($data['password']);
         if ($this->AccountCategoryModel->edit($data, $id) == false) {
             echo json_encode(['message' => "Có lỗi xảy ra !"]);
         } else {

@@ -7,7 +7,7 @@ include_once  __DIR__ . '/../Controllers/RoleController.php';
 include_once  __DIR__ . '/../Controllers/AccountsController.php';
 include_once  __DIR__ . '/../Controllers/CartController.php';
 include_once  __DIR__ . '/../Controllers/OrderController.php';
-
+include_once  __DIR__ . '/../Controllers/DiscountsController.php';
 
 
 include_once __DIR__ . '/../Routes/handleRouter.php';
@@ -20,6 +20,7 @@ $RoleController = new RoleController();
 $AccountController = new AccountController();
 $CartController = new CartController();
 $OrderController = new OrderController();
+$DiscountsController = new DiscountsController();
 
 $methodRequest = $_SERVER['REQUEST_METHOD'];
 $UriRequest = $_SERVER['REQUEST_URI'];
@@ -89,6 +90,15 @@ $routers = [
         '/order/countTotalPriceMonth' => function () use ($OrderController) {
             $OrderController->CountTotalPriceMonth();
         },
+        '/discounts' => function () use ($DiscountsController) {
+            $DiscountsController->index();
+        },
+        '/discounts/(\d+)' => function ($id) use ($DiscountsController) {
+            $DiscountsController->detail($id);
+        },
+        '/discounts/category' => function () use ($DiscountsController) {
+            $DiscountsController->getDiscountOfCategory();
+        }
     ],
     'POST' =>[
         '/register' => function () use ($AuthController) {
@@ -133,6 +143,12 @@ $routers = [
         '/order/momoPayment' => function () use ($OrderController) {
             $OrderController->momoPayment();
         },
+        '/discounts' => function () use ($DiscountsController) {
+            $DiscountsController->create();
+        },
+        '/discounts/apply' => function () use ($DiscountsController) {
+            $DiscountsController->applyDiscountCode();
+        },
     ],
     'PATCH' =>[
         '/delete/product/(\d+)' => function ($id) use ($ProductController) {
@@ -170,6 +186,17 @@ $routers = [
         },
         '/card/update' => function () use ($CartController) {
             $CartController->UpdateCard();
+        },
+        '/discounts/(\d+)' => function ($id) use ($DiscountsController) {
+            $DiscountsController->edit($id);
+        },
+    ],
+    'DELETE' =>[
+        '/discounts/(\d+)' => function ($id) use ($DiscountsController) {
+            $DiscountsController->delete($id);
+        },
+        '/discounts/category/(\d+)' => function ($id) use ($DiscountsController) {
+            $DiscountsController->deleteDiscountCategory($id);
         },
     ],
     // khi xảy ra CORS trình duyệt sẽ gửi OPTIONS (preflight request) trước khi yêu cầu thực tế đến máy chủ. Mục đích kiếm tra xem máy chủ có hỗ trợ method mà web gửi lên không
