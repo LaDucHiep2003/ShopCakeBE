@@ -33,6 +33,8 @@ class DiscountsModel extends BaseModel
 
     public function create($data)
     {
+        $title = $data['title'];
+        $description = $data['description'];
         $code = $data['code'];
         $type = $data['type'];
         $value = $data['value'];
@@ -43,8 +45,8 @@ class DiscountsModel extends BaseModel
         $category_id = $data['category_id'];
 
         try{
-            $stmt = $this->conn->prepare("INSERT INTO discounts (code, type, value, start_date, end_date, max_uses, min_order_amount) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$code, $type, $value, $start_date, $end_date, $max_uses, $min_order_amount]);
+            $stmt = $this->conn->prepare("INSERT INTO discounts (title, description, code, type, value, start_date, end_date, max_uses, min_order_amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $description, $code, $type, $value, $start_date, $end_date, $max_uses, $min_order_amount]);
 
             $discountCodeId = $this->conn->lastInsertId();
 
@@ -60,6 +62,8 @@ class DiscountsModel extends BaseModel
     }
     public function edit($data, $id)
     {
+        $title = $data['title'];
+        $description = $data['description'];
         $code = $data['code'];
         $type = $data['type'];
         $value = $data['value'];
@@ -74,10 +78,10 @@ class DiscountsModel extends BaseModel
 
             $stmt = $this->conn->prepare("
             UPDATE discounts 
-            SET code = ?, type = ?, value = ?, start_date = ?, end_date = ?, max_uses = ?, min_order_amount = ?
+            SET title = ?, description = ?, code = ?, type = ?, value = ?, start_date = ?, end_date = ?, max_uses = ?, min_order_amount = ?
             WHERE id = ?
         ");
-            $stmt->execute([$code, $type, $value, $start_date, $end_date, $max_uses, $min_order_amount, $id]);
+            $stmt->execute([$title, $description, $code, $type, $value, $start_date, $end_date, $max_uses, $min_order_amount, $id]);
 
             $stmtCheck = $this->conn->prepare("SELECT id FROM discount_category WHERE discount_id = ?");
             $stmtCheck->execute([$id]);

@@ -8,7 +8,7 @@ include_once  __DIR__ . '/../Controllers/AccountsController.php';
 include_once  __DIR__ . '/../Controllers/CartController.php';
 include_once  __DIR__ . '/../Controllers/OrderController.php';
 include_once  __DIR__ . '/../Controllers/DiscountsController.php';
-
+include_once  __DIR__ . '/../Controllers/BannerController.php';
 
 include_once __DIR__ . '/../Routes/handleRouter.php';
 
@@ -21,6 +21,7 @@ $AccountController = new AccountController();
 $CartController = new CartController();
 $OrderController = new OrderController();
 $DiscountsController = new DiscountsController();
+$BannerController = new BannerController();
 
 $methodRequest = $_SERVER['REQUEST_METHOD'];
 $UriRequest = $_SERVER['REQUEST_URI'];
@@ -98,7 +99,10 @@ $routers = [
         },
         '/discounts/category' => function () use ($DiscountsController) {
             $DiscountsController->getDiscountOfCategory();
-        }
+        },
+        '/banners' => function () use ($BannerController) {
+            $BannerController->index();
+        },
     ],
     'POST' =>[
         '/register' => function () use ($AuthController) {
