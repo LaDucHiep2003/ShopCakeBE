@@ -120,7 +120,7 @@ class AuthModel{
             } else {
                 $failed = $account['failed_attempts'] + 1;
                 if ($failed >= 5) {
-                    $lockedUntil = (new DateTime())->modify('+1 minutes')->format('Y-m-d H:i:s');
+                    $lockedUntil = (new DateTime())->modify('+30 minutes')->format('Y-m-d H:i:s');
 
                     $this->conn->prepare("UPDATE accounts SET failed_attempts = :fail, status = 'inactive', locked_until = :locked WHERE id = :id")
                         ->execute([

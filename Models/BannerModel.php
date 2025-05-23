@@ -16,4 +16,12 @@ class BannerModel
     {
         return $this->BannerModel->index();
     }
+    public function create($data)
+    {
+        return $this->BannerModel->create($data);
+    }
+    public function delete($id)
+    {
+        return $this->BannerModel->delete($id);
+    }
 }

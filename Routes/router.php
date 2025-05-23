@@ -153,6 +153,9 @@ $routers = [
         '/discounts/apply' => function () use ($DiscountsController) {
             $DiscountsController->applyDiscountCode();
         },
+        '/banners' => function () use ($BannerController) {
+            $BannerController->create();
+        },
     ],
     'PATCH' =>[
         '/delete/product/(\d+)' => function ($id) use ($ProductController) {
@@ -201,6 +204,9 @@ $routers = [
         },
         '/discounts/category/(\d+)' => function ($id) use ($DiscountsController) {
             $DiscountsController->deleteDiscountCategory($id);
+        },
+        '/banners/(\d+)' => function ($id) use ($BannerController) {
+            $BannerController->delete($id);
         },
     ],
     // khi xảy ra CORS trình duyệt sẽ gửi OPTIONS (preflight request) trước khi yêu cầu thực tế đến máy chủ. Mục đích kiếm tra xem máy chủ có hỗ trợ method mà web gửi lên không

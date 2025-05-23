@@ -94,6 +94,16 @@ class OrderController
     public function momoPayment()
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        $this->OrderModel->momoPayment($data);
+        $result = $this->OrderModel->momoPayment($data);
+        // Kiểm tra xem kết quả trả về có 'payUrl' không
+        if (isset($result['payUrl'])) {
+            echo json_encode(["payUrl" => $result['payUrl']]);
+        } else {
+            http_response_code(400); // bad request
+            echo json_encode([
+                "error" => "Không thể tạo thanh toán MoMo.",
+                "message" => $result
+            ]);
+        }
     }
 }
