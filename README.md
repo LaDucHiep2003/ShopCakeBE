@@ -1,3 +1,8 @@
+## Hệ thống bán bán bánh ngọt
+Dự án backend API viết bằng PHP thuần, quản lý sản phẩm, danh mục, đơn hàng, banner, discount, user,..
+Tích hợp thanh toán VnPay
+Sử dụng JWT để xác thực và phân quyền người dùng.
+
 ## Yêu cầu hệ thống
 - PHP >= 8.1
 - MySQL >= 8.0
